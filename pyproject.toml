@@ -1,0 +1,39 @@
+[build-system]
+requires = [
+    "setuptools>=64", 
+    "setuptools_scm>=6.0",
+    "numpy>=1.20"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyFCS"
+dynamic = ["version", ]
+authors = [
+    {name="Paul David Harris", email="harripd@gmail.com"}]
+description = "Functions for performing auto and cross-correlations of single photon data with and without weights"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = ["FCS","single molecule", "correlation", "biophysics", "TCSPC"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering"
+ ]
+
+requires-python = ">= 3.10"
+dependencies = [
+    "numpy>=1.20",
+]
+
+
+[tool.setuptools.packages.find]
+include = ['pyFCS*']
+
+[tool.setuptools.package-data]
+pyFCS = ["pyFCS"]

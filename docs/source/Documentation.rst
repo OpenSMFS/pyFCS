@@ -1,0 +1,6 @@
+=============
+Documentation
+=============
+
+.. automodule:: pyFCS
+    :members:
