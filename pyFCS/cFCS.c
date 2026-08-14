@@ -1116,7 +1116,7 @@ static inline Edges* get_edges_fromtimes(timeslist *timesT, timeslist *timesU, i
 static inline Edges* cast_edges(PyObject *pyedges, timeslist *timesT, timeslist *timesU, int minzero, int validate)
 {
 	Edges *edges = NULL;
-	if (pyedges == NULL)
+	if ((pyedges == NULL) || ( pyedges == Py_None))
 	{
 		edges = get_edges_fromtimes(timesT, timesU, minzero);
 	}
@@ -2110,18 +2110,18 @@ static PyMethodDef pyFCS_funcs[] = {
 		"Compute the correlation between two arrays, or sets of arrays,\n" 
 		"of discrete events (point-process). The input values should be\n"
 		"the result of a point process such as photon arival times.\n"
-		"The are useful in computing the correlation curves used in\n"
+		"This is used to compute the correlation curves used in\n"
 		"Fluorescence Coorelation Spectroscopy (FCS), and extensions thereof.\n"
-		"The main extensions supported are Fluorescence Lifetime Correlation\n"
-		"Spectroscopy (FLCS, `(Bohmer 2002) <https://doi.org/10.1016/S0009-2614(02)00044-1>`__ ),\n"
+		"The main extensions supported are: Fluorescence Lifetime Correlation\n"
+		"Spectroscopy (FLCS, `(Bohmer 2002) <https://doi.org/10.1016/S0009-2614(02)00044-1>`_ ),\n"
 		"and purified/filtered FCS\n"
-		"`(Laurence 2007) <https://doi.org/10.1529/biophysj.106.093591>`\n"
-		"/`(Felekyan 2012) <https://doi.org/10.1002/cphc.201100897>`__\n"
+		"`(Laurence 2007) <https://doi.org/10.1529/biophysj.106.093591>`_\n"
+		"/`(Felekyan 2012) <https://doi.org/10.1002/cphc.201100897>`_\n"
 		"\n"
 		"The basic form of this function implements the algorithm described in\n"
-		"`(Laurence 2006) <https://doi.org/10.1364/OL.31.000829>`__ .\n"
+		"`(Laurence 2006) <https://doi.org/10.1364/OL.31.000829>`_ .\n"
 		"\n"
-		"In this function, the (normalized) point-process correlation is defines as\n"
+		"In this function, the (normalized) point-process correlation is defined as\n"
 		"\n"
 		".. math::\n"
 		"    \\hat{G}(\\tau_{b}) = \\frac{\\sum_{K=1}^{K}{n(\\{(i, j) \\ni \\tau_{b} \\le u_{k,j} - t_{k,i} < \\tau_{b+1}\\})}\n"
@@ -2130,7 +2130,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    \\sum_{m=1}^{M}{n(\\{j \\ni u_{k,j} \\ge \\tau_{b+1}\\})}}\n"
 		"\n"
 		"\n"
-		"Where the function :math:`n` is the counts that satisfy the given contion,\n"
+		"Where the function :math:`n` is the counts that satisfy the condition,\n"
 		":math:`T` and :math`U` are arrays of arrays of photons, whose elements are\n"
 		"denoted :math:`t_{ki}` and :math:`u_{kj}` respectively. Both\n"
 		":math:`T` and :math:`K` have :math:`K` distinct arrays. The\n"
@@ -2161,7 +2161,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"divided by the width of the given :math:`\\tau`.\n"
 		"\n"
 		"Weights can also be incorporated. This is used in FLCS, (see\n"
-		"`Ghosh 2018 <https://doi.org/10.1016/j.ymeth.2018.02.009>`__ for\n"
+		"`Ghosh 2018 <https://doi.org/10.1016/j.ymeth.2018.02.009>`_ for\n"
 		"review). When weights are incorporated, the value of each photon\n"
 		"pair is the product of the weight assigned to each photon, resulting\n"
 		"in the following modified formula:\n"
@@ -2330,7 +2330,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"This normalization is usually employed for fluorescence correlation\n"
 		"spectroscopy (FCS) analysis.\n"
 		"The normalization is performed according to\n"
-		"`(Laurence 2006) <https://doi.org/10.1364/OL.31.000829>`__.\n"
+		"`(Laurence 2006) <https://doi.org/10.1364/OL.31.000829>`_ .\n"
 		"Basically, the input argument `G` is multiplied by:\n\n"
 		".. math::\n"
 		"    \\frac{T-\\tau}{n(\\{i \\ni t_i \\le T - \\tau\\})n(\\{j \\ni u_j \\ge \\tau\\})}\n\n"

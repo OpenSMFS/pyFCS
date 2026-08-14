@@ -1,7 +1,7 @@
 [build-system]
 requires = [
-    "setuptools>=64", 
-    "setuptools_scm>=6.0",
+    "setuptools>=77", 
+    "setuptools_scm>=8.0",
     "numpy>=1.20"
 ]
 build-backend = "setuptools.build_meta"
@@ -13,7 +13,8 @@ authors = [
     {name="Paul David Harris", email="harripd@gmail.com"}]
 description = "Functions for performing auto and cross-correlations of single photon data with and without weights"
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+license = "MIT"
+license-files = ["LICENSE.txt"]
 keywords = ["FCS","single molecule", "correlation", "biophysics", "TCSPC"]
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -34,6 +35,8 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 include = ['pyFCS*']
+
+[tool.setuptools_scm]
 
 [tool.setuptools.package-data]
 pyFCS = ["pyFCS"]

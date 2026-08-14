@@ -15,7 +15,7 @@ extension = [Extension("pyFCS", sources=["pyFCS/cFCS.c","pyFCS/correlate.c",
 # extension = [Extension("helloworld", ["hwrd.c",])]
 
 setup(name='pyFCS',
-      version='0.1.1',
+      include_package_data=True, 
       description='Pure C python module for calculating Fluorescence Correlation curves .',
       ext_modules=extension
       )
