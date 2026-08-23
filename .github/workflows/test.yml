@@ -33,4 +33,4 @@ jobs:
       - name: Test
         run: |
           cd tests
-          pytest
+          python -m pytest
