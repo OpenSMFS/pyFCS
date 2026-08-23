@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest ]
-        python-version: ["3.9", "3.12", "3.14"]
+        python-version: ["3.10", "3.12", "3.14"]
         exclude:
           - os: macos-latest # broken numpy versions
             python-version: "3.9"
@@ -26,23 +26,12 @@ jobs:
            channels: conda-forge
            python-version: ${{matrix.python-version}}
            activate-environment: test
-      - name: Apple Silicon oddities
-        if: matrix.os == 'macos-latest'
-        shell: bash -l {0}
-        run: |
-          brew install c-blosc hdf5
-          export HDF5_DIR=/opt/homebrew/opt/hdf5
-          export BLOSC_DIR=/opt/homebrew/opt/c-blosc
       - name: Install Dependencies
         shell: bash -l {0}
         run: |
           conda install -c conda-forge pip
           python -m pip install setuptools build
           conda install numpy pytest
-      - name: Old Python dependencies
-        if: matrix.python-version <= 3.9
-        shell: bash -l {0}
-        run: pip install importlib_resources
       - name: build pyFCS
         shell: bash -l {0}
         run: |
