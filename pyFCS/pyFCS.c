@@ -1559,111 +1559,6 @@ static inline int weights_index_cast(PyObject *pyweightsT, PyObject *pyweightsU,
 	return cerr;
 }
 
-/*static void print_nplist(nplist *in, const char *name)
-{
-	if (in != NULL)
-	{
-		printf("%s = %p, ->n = %lu, ->arrs = %p ", name, in, in->n, in->arrs);
-		switch (in->dtype)
-		{
-			case DTYPE_UNDEFINED:
-			if (in->cdata.times == NULL)
-				printf("data not set, no data pointer set\n");
-			else
-				printf("data not set, but pointer set to %p\n", in->cdata.times);
-			break;
-			case DTYPE_TIMES:
-			printf("->cdata.times = %p, ->cdata.times->n = %lu, ->cdata.times->times = %p, ->cdata.times->lens = %p\n", 
-					in->cdata.times, in->cdata.times->n, in->cdata.times->times, in->cdata.times->lens);
-			printf("[ ");
-			for (size_t i = 0; i < in->cdata.times->n; i++)
-			{
-				printf(" %p,", in->cdata.times->times[i]);
-			}
-			printf("]\n");
-			break;
-			case DTYPE_NANOS:
-			printf("->cdata.nanos = %p, ->cdata.nanos->n = %lu, ->cdata.nanos->nanos = %p, ->cdata.nanos->lens = %p\n", 
-					in->cdata.nanos, in->cdata.nanos->n, in->cdata.nanos->nanos, in->cdata.nanos->lens);
-			for (size_t i = 0; i < in->cdata.nanos->n; i++)
-			{
-				printf(" %p,", in->cdata.nanos->nanos[i]);
-			}
-			printf("]\n");
-			break;
-			case DTYPE_WEIGHTSLIST:
-			printf("->cdata.weightsL = %p, ->cdata.weightsL->n = %lu, ->cdata.weightsL->nW = %lu, ->cdata.weightsL->lens = %p, ->cdata.weightsL->nd = %d, ->cdata.weightsL->weights = %p\n",
-					in->cdata.weightsL, in->cdata.weightsL->n, in->cdata.weightsL->nW, in->cdata.weightsL->lens, in->cdata.weightsL->nd, in->cdata.weightsL->weights);
-			for (size_t i = 0; i < in->n; i++)
-			{
-				if (in->cdata.weightsL == NULL)
-				{
-					printf("bad processing, weightsL not set\n");
-				}
-				else
-				{
-					printf("  [ ");
-					for (size_t j = 0; j < in->cdata.weightsL->nW; j++)
-					{
-						printf("%p, ", in->cdata.weightsL->weights[i][j]);
-					}
-					printf("]\n");
-				}
-			}
-			break;
-			case DTYPE_WEIGHTSINDEX:
-			printf("->cdata.weightsI = %p, ->cdata.weightsI->nW = %lu, ->cdata.weightsL->nI = %lu, ->cdata.weightsL->nd = %d, ->cdata.weightsL->weights = %p\n",
-					in->cdata.weightsI, in->cdata.weightsI->nW, in->cdata.weightsI->nI, in->cdata.weightsI->nd, in->cdata.weightsI->weights);
-			if (in->cdata.weightsI->weights == NULL)
-			{
-				printf("bad processing, weightsI not set\n");
-			}
-			else
-			{
-				printf("[ ");
-				for (size_t i = 0; i < in->cdata.weightsI->nW; i++)
-				{
-					printf(" %p,", in->cdata.weightsI->weights[i]);
-				}
-				printf("]\n");
-				for (size_t i = 0; i < in->cdata.weightsI->nW; i++)
-				{
-					printf("[\n");
-					if (in->cdata.weightsI->weights[i] == NULL)
-					{
-						printf("bad processing, null in array of weights[%lu]\n", i);
-					}
-					else
-					{
-						printf("    [ ");
-						for (size_t j = 0; j < in->cdata.weightsI->nI; j++) 
-						{
-							printf(" %f,", in->cdata.weightsI->weights[i][j]);
-						}
-						printf("]\n");
-					}
-					printf("]\n");
-				}
-			}
-			break;
-		}
-	}
-	else
-		printf("input %s is NULL\n", name);
-}
-
-static void print_rfcnts(PyObject *pybins, PyObject *pyedges, PyObject *pytimesT, PyObject *pytimesU, PyObject *pyweightsT, PyObject *pyweightsU, PyObject *pynanosT, PyObject *pynanosU)
-{
-	Py_ssize_t bns = (pybins == NULL) ? -1 : Py_REFCNT(pybins);
-	Py_ssize_t edg = (pyedges == NULL) ? -1 : Py_REFCNT(pyedges);
-	Py_ssize_t tT = (pytimesT == NULL) ? -1 : Py_REFCNT(pytimesT);
-	Py_ssize_t tU = (pytimesU == NULL) ? -1 : Py_REFCNT(pytimesU);
-	Py_ssize_t wT = (pyweightsT == NULL) ? -1 : Py_REFCNT(pyweightsT);
-	Py_ssize_t wU = (pyweightsU == NULL) ? -1 : Py_REFCNT(pyweightsU);
-	Py_ssize_t nT = (pynanosT == NULL) ? -1 : Py_REFCNT(pynanosT);
-	Py_ssize_t nU = (pynanosU == NULL) ? -1 : Py_REFCNT(pynanosU);
-	printf("rfcounts: bins = %ld, edges = %ld, timesT = %ld, timesU = %ld, weightsT = %ld, weightsU = %ld, nanosT = %ld, nanosU = %ld\n", bns, edg, tT, tU, wT, wU, nT, nU);
-}*/
 
 // main function of pyFCS
 static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwargs)
@@ -1682,7 +1577,7 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 	cc_weights *corrl = NULL;
 	// variables for specifying the size and shape of the output array
 	int outndim = 1;
-	size_t nWt = 1, nWu=1;
+	size_t nWt = 1, nWu=1, numel = 0;
 	npy_intp *outdims = NULL;
 	// parse arguments
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OOO|OOOOOpppppI", kwlist, &pytimesT, &pytimesU, &pybins, &pyweightsT, &pyweightsU, &pynanosT, &pynanosU, &pyedges, &normalize, &norm_bin_width, &minzero, &cross_correlate, &validate, &max_cores))
@@ -1716,25 +1611,41 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 		nWt = npweightsT->cdata.weightsI->nW;
 		nWu = npweightsU->cdata.weightsI->nW;
 	}
+	if ((outdims = (npy_intp*) malloc(outndim*sizeof(npy_intp))) == NULL) {
+		PyErr_NoMemory();
+		goto frees;
+	}
+	outdims[outndim-1] = bins->nbin - 1;
+	if (outndim == 2) {
+		outdims[0] = (nWt != 1) ? (npy_intp) nWt : (npy_intp) nWu;
+		numel = (bins->nbin - 1) * (size_t) outdims[0];
+	}
+	else if (outndim == 3) {
+		outdims[0] = (npy_intp) nWt;
+		outdims[1] = (npy_intp) nWu;
+		numel = (bins->nbin - 1)*nWt*nWu;
+	}
+	else {
+		numel = bins->nbin - 1;
+	}
 	// allocating for histogramed output
-	if ((func_code == FC_INT)&&(!normalize)&&(!norm_bin_width)) // if no normalization an no weights, then output is uint64, otherwise double
-	{
-		if ((corrI = PyDataMem_NEW((bins->nbin - 1)*sizeof(uint64_t))) == NULL)
-		{
+	if ((func_code == FC_INT)&&(!normalize)&&(!norm_bin_width)) {// if no normalization an no weights, then output is uint64, otherwise double
+		if ((out = PyArray_SimpleNew(outndim, outdims, NPY_UINT64)) == NULL) {
 			PyErr_NoMemory();
 			goto frees;
 		}
+		corrI = (cc_times*) PyArray_DATA((PyArrayObject*) out);
 		for (size_t i = 0; i < (bins->nbin - 1); i++)
 			corrI[i] = 0;
 	}
 	else
 	{
-		if ((corrl = PyDataMem_NEW(nWt*nWu*(bins->nbin - 1)*sizeof(cc_weights))) == NULL)
-		{
+		if ((out = PyArray_SimpleNew(outndim, outdims, NPY_DOUBLE)) == NULL) {
 			PyErr_NoMemory();
 			goto frees;
 		}
-		for (size_t i = 0; i < nWt*nWu*(bins->nbin - 1); i++)
+		corrl = (cc_weights*) PyArray_DATA((PyArrayObject*) out);
+		for (size_t i = 0; i < numel; i++)
 			corrl[i] = 0.0;
 	}
 	Py_BEGIN_ALLOW_THREADS;
@@ -1771,48 +1682,11 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 	Py_END_ALLOW_THREADS;
 	if (cerr)
 	{
-		if (corrl != NULL)
-		{
-			PyDataMem_FREE(corrl);
-			corrl = NULL;
-		}
-		if (corrI != NULL)
-		{
-			PyDataMem_FREE(corrI);
-			corrI = NULL;
-		}
+		Py_XDECREF(out);
 		PyErr_NoMemory();
 		goto frees;
 	}
-	// make the array
-	if ((outdims = (npy_intp*) malloc(outndim*sizeof(npy_intp))) == NULL)
-	{
-		PyErr_NoMemory();
-		goto frees;
-	}
-	outdims[outndim-1] = bins->nbin - 1;
-	if (outndim == 2)
-	{
-		outdims[0] = (nWt != 1) ? (npy_intp) nWt : (npy_intp) nWu;
-	}
-	else if (outndim == 3)
-	{
-		outdims[0] = (npy_intp) nWt;
-		outdims[1] = (npy_intp) nWu;
-	}
-	if ((func_code == FC_INT)&&(!normalize)&&(!norm_bin_width))
-		out = PyArray_SimpleNewFromData(1, outdims, NPY_UINT64, corrI);
-	else
-		out = PyArray_SimpleNewFromData(outndim, outdims, NPY_DOUBLE, corrl);
-	PyArray_ENABLEFLAGS((PyArrayObject*) out, NPY_ARRAY_OWNDATA);
 	frees:
-	if (out == NULL)
-	{
-		Xfree(corrI);
-		corrI = NULL;
-		Xfree(corrl);
-		corrl = NULL;
-	}
 	Xfree(outdims);
 	outdims = NULL;
 	all_frees(nptimesT, nptimesU, bins, edges, npweightsT, npweightsU, npnanosT, npnanosU);
@@ -1839,7 +1713,7 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 	Edges *edges = NULL;
 	cc_weights *norm = NULL;
 	FuncCode func_code = FC_ERROR;
-	size_t nWt = 1, nWu = 1;
+	size_t nWt = 1, nWu = 1, numel = 0;
 	int outndim = 1;
 	npy_intp *outdims = NULL;
 	PyObject *out = NULL;
@@ -1876,11 +1750,31 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 		nWt = npweightsT->cdata.weightsI->nW;
 		nWu = npweightsU->cdata.weightsI->nW;
 	}
-	if ((norm = PyDataMem_NEW((bins->nbin - 1)*nWt*nWu*sizeof(cc_weights))) == NULL)
+	if ((outdims = malloc(outndim)) == NULL)
 	{
 		PyErr_NoMemory();
 		goto frees;
 	}
+	outdims[outndim-1] = (npy_intp) bins->nbin - 1;
+	if (outndim == 2) {
+		outdims[0] = (nWt != 1) ? (npy_intp) nWt : (npy_intp) nWu;
+		numel = (bins->nbin -1) * (size_t) outdims[0];
+	}
+	else if (outndim == 3) {
+		outdims[0] = nWt;
+		outdims[1] = nWu;
+		numel = (bins->nbin -1) * nWt * nWu;
+	}
+	else {
+		numel = bins->nbin - 1;
+	}
+	if ((out = PyArray_SimpleNew(outndim, outdims, NPY_DOUBLE)) == NULL) {
+		PyErr_NoMemory();
+		goto frees;
+	}
+	norm = (cc_weights*) PyArray_DATA((PyArrayObject*) out);
+	for (size_t i = 0; i < numel; i++)
+		norm[i] = 1.0;
 	switch (func_code)
 	{
 		case FC_INT:
@@ -1909,21 +1803,6 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 		PyErr_NoMemory();
 		goto frees;
 	}
-	if ((outdims = malloc(outndim)) == NULL)
-	{
-		PyErr_NoMemory();
-		goto frees;
-	}
-	outdims[outndim-1] = (npy_intp) bins->nbin - 1;
-	if (outndim == 2)
-		outdims[0] = (nWt != 1) ? (npy_intp) nWt : (npy_intp) nWu;
-	else if (outndim == 3)
-	{
-		outdims[0] = nWt;
-		outdims[1] = nWu;
-	}
-	out = PyArray_SimpleNewFromData(outndim, outdims, NPY_DOUBLE, norm);
-	PyArray_ENABLEFLAGS((PyArrayObject*) out, NPY_ARRAY_OWNDATA);
 	frees:
 	if (out == NULL)
 	{
@@ -2145,11 +2024,10 @@ static PyMethodDef pyFCS_funcs[] = {
 		"\n"
 		"and the second\n"
 		"\n"
-		".. math::\n"
+		".. math::\n\n"
 		"    \\frac{(T_{k}-\\tau_{b+1})}\n"
 		"    {\\sum_{m=1}^{M}{n(\\{i \\ni t_{k,i} \\le T - \\tau_{b+1}\\})}\n"
-		"    \\sum_{m=1}^{M}{n(\\{j \\ni u_{k,j} \\ge \\tau_{b+1}\\})(\\tau_{b+1}-\\tau_{b})}}\n"
-		"\n"
+		"    \\sum_{m=1}^{M}{n(\\{j \\ni u_{k,j} \\ge \\tau_{b+1}\\})(\\tau_{b+1}-\\tau_{b})}}\n\n"
 		"Additionally, since the alorithm groups values of :math:`\\tau` into bins,\n"
 		"the raw counts are divided by the width of the bin.\n"
 		"\n"
@@ -2164,18 +2042,15 @@ static PyMethodDef pyFCS_funcs[] = {
 		"`Ghosh 2018 <https://doi.org/10.1016/j.ymeth.2018.02.009>`_ for\n"
 		"review). When weights are incorporated, the value of each photon\n"
 		"pair is the product of the weight assigned to each photon, resulting\n"
-		"in the following modified formula:\n"
-		"\n"
-		".. math::\n"
+		"in the following modified formula:\n\n"
+		".. math::\n\n"
 		"    \\hat{G}_{\\alpha,\\beta}(\\tau_{b}) = \\frac{\\{\\sum_{m=1}^{M}{[\\sum_{i,j}^{\\tau_{b} \\le t_{j}-t_{i} < \\tau_{b+1}}{f_{\\alpha,i}f_{\\beta,j}}]}\\}\n"
 		"    \\sum_{m=1}^{M}{(T-\\tau_{b})}}\n"
 		"    {\\sum_{m=1}^{M}{[\\sum_{i}^{t_{i} \\le T - \\tau_{b}}}{f_{\\alpha,i}]}\n"
-		"    \\sum_{m=1}^{M}{[\\sum_{j}^{t_{j} \ge \\tau_{b}}{f_{\\beta,j}}}]}\n"
-		"\n"
+		"    \\sum_{m=1}^{M}{[\\sum_{j}^{t_{j} \ge \\tau_{b}}{f_{\\beta,j}}}]}\n\n"
 		"Where :math:`\delta` is the delta function, and :math:`H` is the\n"
 		"heavyside function. The effect is simply to multiply each photon\n"
-		"or photon pair by its respective weight(s).\n"
-		"\n"
+		"or photon pair by its respective weight(s).\n\n"
 		"Parameters\n"
 		"----------\n"
 		"timesT/U: list[numpy.ndarray] | numpy.ndarray\n"
@@ -2209,7 +2084,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    specified, then edges are assigned automatically as first and\n"
 		"    last times in timesT/U arrays, unless ``minzero=TRUE``, where\n"
 		"    the start time is assumed to be 0, while the stop remains the\n"
-		"    last photon. The default is None."
+		"    last photon. The default is None.\n"
 		"normalize: bool, optional\n"
 		"    Whether or not to multiply array by normalization factor.\n"
 		"    The default is True.\n"
@@ -2222,7 +2097,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"cross_correlate: bool, optional\n"
 		"    Whether or not to return the correlations of all combinations\n"
 		"    of weightsT with weightsU arrays (True), or only correlate each\n"
-		"    weight with it's pair in weightsT/U (False)."
+		"    weight with it's pair in weightsT/U (False).\n"
 		"    *For weights correlation only, ignored if only timesT/U specified.*\n"
 		"    the default is False.\n"
 		"    Whether or not to performa a check that times arrays are\n"
@@ -2235,7 +2110,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    both are monotonically increasing. The algorithm assumes\n"
 		"    arrays are monotonically increasing, and non-monotonically\n"
 		"    increasing arrays will have undefined results.\n"
-		"    The default is True."
+		"    The default is True.\n"
 		"max_cores: int, optional\n"
 		"    Maximum number of cores to use in computation, for parallel \n"
 		"    processing optimization (only applicable for multiple bursts).\n"
@@ -2249,7 +2124,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    functions, then the dimensionality will be determined by the\n"
 		"    input to ``cross_correlate``, resulting in 2D \n"
 		"    when ``cross_correlate=False``, and 3D when\n"
-		"    ``cross_correlate=True``. "
+		"    ``cross_correlate=True``.\n"
 	},
 	{"normalization_factor",(PyCFunction)pyFCS_normalization_factor, METH_VARARGS|METH_KEYWORDS, 
 		"normalization_factor(timesT, timesU, bins, weightsT=None, weightsU=None, nanosT=None, nanosU=None, edges=None, normalize=True, norm_bin_width=True, minzero=False, validate=True)\n"
@@ -2289,7 +2164,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    specified, then edges are assigned automatically as first and\n"
 		"    last times in timesT/U arrays, unless ``minzero=TRUE``, where\n"
 		"    the start time is assumed to be 0, while the stop remains the\n"
-		"    last photon. The default is None."
+		"    last photon. The default is None.\n"
 		"normalize: bool, optional\n"
 		"    Whether or not to multiply array by normalization factor.\n"
 		"    The default is True.\n"
@@ -2302,7 +2177,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"cross_correlate: bool, optional\n"
 		"    Whether or not to return the normalization factor for all combinations\n"
 		"    of weightsT with weightsU arrays (True), or only correlate each\n"
-		"    weight with it's pair in weightsT/U (False)."
+		"    weight with it's pair in weightsT/U (False).\n"
 		"    *For weights correlation only, ignored if only timesT/U specified.*\n"
 		"    the default is False.\n"
 		"validate: bool, optional\n"
@@ -2310,13 +2185,13 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    both are monotonically increasing. The algorithm assumes\n"
 		"    arrays are monotonically increasing, and non-monotonically\n"
 		"    increasing arrays will have undefined results.\n"
-		"    The default is True."
+		"    The default is True.\n"
 		"Returns\n"
 		"-------\n"
 		"norm_factor: np.ndarray\n"
 		"    The normalization factors for each bin of the array.\n"
 		"    Multiply this by the calculated non-normalzied correlation\n"
-		"    for the normalized curve."
+		"    for the normalized curve.\n"
 	},
 	{"normalize", (PyCFunction)pyFCS_normalize, METH_VARARGS|METH_KEYWORDS,
 		"normalize(G, timesT, timesU, bins, edges=None, normalize=True, norm_bin_width=True, minzero=False, validate=True)\n"
@@ -2360,7 +2235,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    weights per point (photon) in timesT/U. Multiple weights functions\n"
 		"    may be specified by making the array(s) 2D, and having\n"
 		"    dimension 0 specify the distinct functions\n"
-		"    The default is None\n"
+		"    The default is None.\n"
 		"nanosT/U: list[numpy.ndarray] | numpy.ndarray, optional\n"
 		"    Indexes per point (photon) to identify which weight to use.\n"
 		"    Must be non-negative integer array or sequence of non-negative interger arrays\n"
@@ -2373,7 +2248,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    specified, then edges are assigned automatically as first and\n"
 		"    last times in timesT/U arrays, unless ``minzero=TRUE``, where\n"
 		"    the start time is assumed to be 0, while the stop remains the\n"
-		"    last photon. The default is None."
+		"    last photon. The default is None.\n"
 		"normalize: bool, optional\n"
 		"    Whether or not to multiply array by normalization factor.\n"
 		"    Should be oposite of argument used in :func:`correlate`.\n"

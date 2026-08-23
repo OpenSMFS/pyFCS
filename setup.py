@@ -9,8 +9,9 @@ Created on Mon Aug 26 10:07:39 2024
 from setuptools import setup, Extension
 import numpy as np
 
-extension = [Extension("pyFCS", sources=["pyFCS/cFCS.c","pyFCS/correlate.c", 
+extension = [Extension("pyFCS", sources=["pyFCS/pyFCS.c","pyFCS/correlate.c", 
                                          "pyFCS/correlate_thread.c", "pyFCS/correlateinterface.c"], 
+                       depends=["pyFCS/correlate.h"],
                        CFLAGS="-g", include_dirs=[np.get_include()])]
 # extension = [Extension("helloworld", ["hwrd.c",])]
 
