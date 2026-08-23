@@ -1565,12 +1565,11 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 {
 	char *kwlist[] = {"timesT", "timesU", "bins", "weightsT", "weightsU", "nanosT", "nanosU", "edges", "normalize", "norm_bin_width", "minzero", "cross_correlate", "validate", "max_cores", NULL};
 	PyObject *pytimesT = NULL, *pytimesU, *pybins = NULL, *pyweightsT = NULL, *pyweightsU = NULL, *pynanosT = NULL, *pynanosU = NULL, *pyedges = NULL, *out = NULL;
-	int normalize=TRUE, norm_bin_width=TRUE, minzero=FALSE, cross_correlate=FALSE, validate=TRUE;
+	int normalize=TRUE, norm_bin_width=TRUE, minzero=FALSE, cross_correlate=FALSE, validate=TRUE, cerr = FALSE;
 	unsigned int max_cores = 4;
 	nplist *nptimesT = NULL, *nptimesU = NULL, *npweightsT = NULL, *npweightsU = NULL, *npnanosT = NULL, *npnanosU = NULL;
 	Bins *bins = NULL;
 	Edges *edges = NULL;
-	Py_ssize_t cerr;
 	FuncCode func_code = FC_ERROR;
 	// pointers to final data output
 	cc_times *corrI = NULL;
@@ -1590,7 +1589,6 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 	// convert timesT/U
 	if (base_casts(pytimesT, pytimesU, pybins, pyedges, minzero, validate, &nptimesT, &nptimesU, &bins, &edges))
 		goto exit;
-	// print_rfcnts(pybins, pyedges, pytimesT, pytimesU, pyweightsT, pyweightsU, pynanosT, pynanosU);
 	// allocate array for normalization factor
 	if (func_code == FC_WEIGHTSLIST)
 	{
@@ -1702,12 +1700,12 @@ static PyObject* pyFCS_correlate(PyObject* self, PyObject* args, PyObject* kwarg
 	return out;
 }
 
+	
 static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyObject* kwargs)
 {
-	char *kwlist[] = {"timesT", "timesU", "bins", "weightsT", "weightsU", "nanosT", "nanosU", "edges", "normalize", "norm_bin_width", "minzero", "cross_correlate", "validate", "max_cores", NULL};
+	char *kwlist[] = {"timesT", "timesU", "bins", "weightsT", "weightsU", "nanosT", "nanosU", "edges", "normalize", "norm_bin_width", "minzero", "cross_correlate", "validate", NULL};
 	PyObject *pytimesT = NULL, *pytimesU = NULL, *pybins = NULL, *pyweightsT = NULL, *pyweightsU = NULL, *pynanosT = NULL, *pynanosU = NULL, *pyedges = NULL;
-	int normalize = TRUE, norm_bin_width = TRUE, minzero=FALSE, cross_correlate = FALSE, validate = TRUE;
-	int cerr = FALSE;
+	int normalize = TRUE, norm_bin_width = TRUE, minzero=FALSE, cross_correlate = FALSE, validate = TRUE, cerr = FALSE;
 	nplist *nptimesT = NULL, *nptimesU = NULL, *npweightsT = NULL, *npweightsU = NULL, *npnanosT = NULL, *npnanosU = NULL;
 	Bins *bins = NULL;
 	Edges *edges = NULL;
@@ -1718,19 +1716,13 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 	npy_intp *outdims = NULL;
 	PyObject *out = NULL;
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OOO|OOOOOppppp", kwlist, &pytimesT, &pytimesU, &pybins, &pyweightsT, &pyweightsU, &pynanosT, &pynanosU, &pyedges, &normalize, &norm_bin_width, &minzero, &cross_correlate, &validate))
-		goto final;
-	if ((!normalize)&&(!norm_bin_width))
-	{
-		PyErr_WarnEx(PyExc_UserWarning, "No normalization factor calculated, at least one of normalize and norm_bin_width should be true", 1);
-	}
+		goto exit;
 	if ((func_code = kwarg_choice(pyweightsT, pyweightsU, pynanosT, pynanosU)) == FC_ERROR)
-	{
-		goto frees;
-	}
+		goto exit;
+	// convert timesT/U
 	if (base_casts(pytimesT, pytimesU, pybins, pyedges, minzero, validate, &nptimesT, &nptimesU, &bins, &edges))
-	{
-		goto final;
-	}
+		goto exit;
+	// allocate array for normalization factor
 	if (func_code == FC_WEIGHTSLIST)
 	{
 		if (weights_cast(pyweightsT, pyweightsU, nptimesT, nptimesU, &npweightsT, &npweightsU))
@@ -1740,7 +1732,7 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 		nWt = npweightsT->cdata.weightsL->nW;
 		nWu = npweightsU->cdata.weightsL->nW;
 	}
-	else if (func_code == FC_WEIGHTSINDEX)
+	else if ( func_code == FC_WEIGHTSINDEX )
 	{
 		if (weights_index_cast(pyweightsT, pyweightsU, pynanosT, pynanosU, nptimesT, nptimesU, &npweightsT, &npweightsU, &npnanosT, &npnanosU))
 			goto frees;
@@ -1750,20 +1742,19 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 		nWt = npweightsT->cdata.weightsI->nW;
 		nWu = npweightsU->cdata.weightsI->nW;
 	}
-	if ((outdims = malloc(outndim)) == NULL)
-	{
+	if ((outdims = (npy_intp*) malloc(outndim*sizeof(npy_intp))) == NULL) {
 		PyErr_NoMemory();
 		goto frees;
 	}
-	outdims[outndim-1] = (npy_intp) bins->nbin - 1;
+	outdims[outndim-1] = bins->nbin - 1;
 	if (outndim == 2) {
 		outdims[0] = (nWt != 1) ? (npy_intp) nWt : (npy_intp) nWu;
-		numel = (bins->nbin -1) * (size_t) outdims[0];
+		numel = (bins->nbin - 1) * (size_t) outdims[0];
 	}
 	else if (outndim == 3) {
-		outdims[0] = nWt;
-		outdims[1] = nWu;
-		numel = (bins->nbin -1) * nWt * nWu;
+		outdims[0] = (npy_intp) nWt;
+		outdims[1] = (npy_intp) nWu;
+		numel = (bins->nbin - 1)*nWt*nWu;
 	}
 	else {
 		numel = bins->nbin - 1;
@@ -1775,6 +1766,9 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 	norm = (cc_weights*) PyArray_DATA((PyArrayObject*) out);
 	for (size_t i = 0; i < numel; i++)
 		norm[i] = 1.0;
+	if ((!normalize)&&(!norm_bin_width)) {
+		PyErr_WarnEx(PyExc_UserWarning, "No normalization factor calculated, at least one of normalize and norm_bin_width should be true", 1);
+	}
 	switch (func_code)
 	{
 		case FC_INT:
@@ -1804,19 +1798,18 @@ static PyObject* pyFCS_normalization_factor(PyObject *self, PyObject *args, PyOb
 		goto frees;
 	}
 	frees:
-	if (out == NULL)
-	{
-		Xfree(norm);
-		norm = NULL;
-	}
 	Xfree(outdims);
 	outdims = NULL;
 	all_frees(nptimesT, nptimesU, bins, edges, npweightsT, npweightsU, npnanosT, npnanosU);
-	nptimesT = NULL;
-	nptimesU = NULL;
-	bins = NULL;
+	npnanosU = NULL;
+	npnanosT = NULL;
+	npweightsU = NULL;
+	npweightsT = NULL;
 	edges = NULL;
-	final:
+	bins = NULL;
+	nptimesU = NULL;
+	nptimesT = NULL;
+	exit:
 	return out;
 }
 
