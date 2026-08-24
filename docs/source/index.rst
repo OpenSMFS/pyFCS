@@ -12,6 +12,7 @@ Welcome to pyFCS's documentation!
 
    Intro
    Theory
+   notebooks/pyFCStutorial
    Documentation
 
 

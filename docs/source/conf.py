@@ -13,6 +13,7 @@
 import os
 import sys
 import pydata_sphinx_theme
+from importlib.metadata import version as get_version
 
 sys.path.insert(0, os.path.abspath('.'))
 
@@ -25,7 +26,7 @@ author = 'Paul David Harris'
 language = 'en'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.1'
+release = get_version('pyFCS')
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,12 +35,17 @@ release = '0.1.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-        "sphinx.ext.autodoc",
+        'sphinx.ext.autodoc',
+        'sphinx.ext.inheritance_diagram',
         'sphinx.ext.autosummary',
         'sphinx.ext.mathjax',
-        'sphinx.ext.napoleon',
         'sphinx.ext.intersphinx',
-        'sphinx_copybutton'
+        'sphinx.ext.napoleon',
+        'sphinx_copybutton',
+        'rst2pdf.pdfbuilder',
+        'IPython.sphinxext.ipython_console_highlighting',
+        'IPython.sphinxext.ipython_directive',
+        'nbsphinx',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

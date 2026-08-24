@@ -1,3 +1,4 @@
+.ipynb-checkpoints/
 docs/build
 *.egg-info
 build
