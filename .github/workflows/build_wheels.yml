@@ -2,8 +2,8 @@ name: Build
 
 on:
   workflow_run:
-    workflows: ["test"]
-    branches: [main]
+    workflows: test
+    branches: main
     types: 
       - completed
 
