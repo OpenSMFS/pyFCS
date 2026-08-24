@@ -22,8 +22,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.2.0
         env:
-          CIBW_TEST_REQUIRES: pytest, numpy
-          CIBW_BEFORE_TEST: python -m pip install pytest
+          CIBW_TEST_REQUIRES: pytest numpy
           CIBW_TEST_COMMAND: python -m pytest {package}/tests
       - uses: actions/upload-artifact@v4
         with:
