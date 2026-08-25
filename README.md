@@ -1,6 +1,6 @@
 # pyFCS
 
-[![Tests](https://github.com/harripd/pyFCS/actions/workflows/test.yml/badge.svg)](https://github.com/harripd/pyFCS/actions)
+[![Tests](https://github.com/OpenSMFS/pyFCS/actions/workflows/test.yml/badge.svg)](https://github.com/harripd/pyFCS/actions)
 
 ## Purpose
 
