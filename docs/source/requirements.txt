@@ -4,3 +4,4 @@ pydata_sphinx_theme==0.17.0
 rst2pdf==0.105
 numpy==2.4.3
 ipython==8.37.0
+nbsphinx==0.9.8
