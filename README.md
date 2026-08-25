@@ -1,6 +1,6 @@
 # pyFCS
 
-[![Tests](https://imgs.xkcd.com/comics/astronomy_status_board.png)](https://xkcd.com/2469/)
+[![Tests](https://github.com/harripd/pyFCS/actions/workflows/test.yml/badge.svg)](https://github.com/harripd/pyFCS/actions)
 
 ## Purpose
 

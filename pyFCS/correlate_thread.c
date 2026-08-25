@@ -95,14 +95,14 @@ int correlate_parallel(size_t nburst, cc_times **edges, size_t *sT, cc_times **p
 	if ( ncore > nburst ) 
 		ncore = nburst + 1;
 	brst_mutex *burst_lock = malloc(sizeof(brst_mutex));
-	if (burst_lock == NULL)
-	{
+	corrinp *threads = NULL;
+	if (burst_lock == NULL){
 		err = TRUE;
 		goto exit;
 	}
 	burst_lock->num_burst = nburst;
 	burst_lock->cur_burst = 0;
-	corrinp *threads = (corrinp*) calloc(ncore, sizeof(corrinp));
+	threads = (corrinp*) calloc(ncore, sizeof(corrinp));
 	if (threads == NULL)
 	{
 		err = TRUE;

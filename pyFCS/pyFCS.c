@@ -2041,7 +2041,7 @@ static PyMethodDef pyFCS_funcs[] = {
 		"    \\sum_{m=1}^{M}{(T-\\tau_{b})}}\n"
 		"    {\\sum_{m=1}^{M}{[\\sum_{i}^{t_{i} \\le T - \\tau_{b}}}{f_{\\alpha,i}]}\n"
 		"    \\sum_{m=1}^{M}{[\\sum_{j}^{t_{j} \ge \\tau_{b}}{f_{\\beta,j}}}]}\n\n"
-		"Where :math:`\delta` is the delta function, and :math:`H` is the\n"
+		"Where :math:`\\delta` is the delta function, and :math:`H` is the\n"
 		"heavyside function. The effect is simply to multiply each photon\n"
 		"or photon pair by its respective weight(s).\n\n"
 		"Parameters\n"
