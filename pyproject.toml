@@ -26,6 +26,8 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering"
  ]
+
+[project.urls]
 Homepage = "https://github.com/OpenSMFS/pyFCS"
 Documentation = "https://pyfcs.readthedocs.io/en/latest/"
 Repositories = "https://github.com/OpenSMFS/pyFCS/"
