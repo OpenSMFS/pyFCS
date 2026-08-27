@@ -12,7 +12,7 @@ import numpy as np
 extension = [Extension("pyFCS", sources=["pyFCS/pyFCS.c","pyFCS/correlate.c", 
                                          "pyFCS/correlate_thread.c", "pyFCS/correlateinterface.c"], 
                        depends=["pyFCS/correlate.h"],
-                       CFLAGS="-g", include_dirs=[np.get_include()])]
+                       include_dirs=[np.get_include()])]
 # extension = [Extension("helloworld", ["hwrd.c",])]
 
 setup(name='pyFCS',
