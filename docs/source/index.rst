@@ -14,6 +14,7 @@ Welcome to pyFCS's documentation!
    Theory
    notebooks/pyFCStutorial
    Documentation
+   ChangeLog
 
 
 
